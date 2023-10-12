@@ -13,7 +13,7 @@ parameters:
       - dev
       - prod
 variables:
-  - group: tf_vg_${{parameter.environment}}
+  - group: tf_vg_${{parameters.environment}}
 stages:
   - stage: tfvalidate
     jobs:
