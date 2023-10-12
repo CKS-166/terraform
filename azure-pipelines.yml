@@ -13,11 +13,7 @@ parameters:
       - dev
       - prod
 variables:
-  bkstrgrg: 'tf_mod3'
-  bkstrg: 'tfstorageaccountt'
-  bkcontainer: 'tfstate'
-  bkstrgkey: 'terraform.tfstate'
-
+  - group: tf_vg_${{environment}}
 stages:
   - stage: tfvalidate
     jobs:
@@ -34,10 +30,10 @@ stages:
               provider: 'azurerm'
               command: 'init'
               backendServiceArm: 'azure-serv-principal-sc'
-              backendAzureRmResourceGroupName: '$(bkstrgrg)'
-              backendAzureRmStorageAccountName: '$(bkstrg)'
-              backendAzureRmContainerName: '$(bkcontainer)'
-              backendAzureRmKey: '$(bkstrgkey)'
+              backendAzureRmResourceGroupName: '$(be_storage_rg)'
+              backendAzureRmStorageAccountName: '$(be_storage_acc)'
+              backendAzureRmContainerName: '$(be_container)'
+              backendAzureRmKey: '$(be_storage_key)'
           - task: TerraformTaskV4@4
             displayName: validate
             inputs:
@@ -59,19 +55,21 @@ stages:
               provider: 'azurerm'
               command: 'init'
               backendServiceArm: 'azure-serv-principal-sc'
-              backendAzureRmResourceGroupName: '$(bkstrgrg)'
-              backendAzureRmStorageAccountName: '$(bkstrg)'
-              backendAzureRmContainerName: '$(bkcontainer)'
-              backendAzureRmKey: '$(bkstrgkey)'
+              backendAzureRmResourceGroupName: '$(be_storage_rg)'
+              backendAzureRmStorageAccountName: '$(be_storage_acc)'
+              backendAzureRmContainerName: '$(be_container)'
+              backendAzureRmKey: '$(be_storage_key)'
           - task: TerraformTaskV4@4
             displayName: plan
             inputs:
               provider: 'azurerm'
               command: 'plan'
+              commandOptions: --var-file=$(env_var_path)
               environmentServiceNameAzureRM: 'azure-serv-principal-sc'
           - task: TerraformTaskV4@4
             displayName: apply
             inputs:
               provider: 'azurerm'
               command: 'apply'
+              commandOptions: --var-file=$(env_var_path)
               environmentServiceNameAzureRM: 'azure-serv-principal-sc'
