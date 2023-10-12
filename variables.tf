@@ -11,8 +11,3 @@ variable "region" {
   nullable = false
   type     = string
 }
-
-variable "state" {
-  nullable = false
-  type = string
-}
